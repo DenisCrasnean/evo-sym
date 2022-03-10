@@ -2,9 +2,27 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
 class Room{
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer", unique=true)
+     */
     private int $id;
-    public string $name = '';
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    public ?string $name = '';
+
+    /**
+     * @ORM\Column(type="integer")
+     */
     public ?int $capacity;
 
     public function getId(): int
