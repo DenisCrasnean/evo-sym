@@ -1,10 +1,6 @@
 name: Symfony
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push]
 
 jobs:
   symfony-tests:
@@ -37,3 +33,7 @@ jobs:
       env:
         DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
       run: vendor/bin/phpunit
+    - name: PHP Code Style Fixer (php-cs-fixer)e
+      uses: StephaneBour/actions-php-cs-fixer@8.1
+      with:
+        dir: ./src
