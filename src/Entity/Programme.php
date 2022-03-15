@@ -3,21 +3,79 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use App\Entity\User;
 
+/**
+ * @ORM\Entity
+ */
 class Programme
 {
-    public string $name;
-    public string $description;
-    private \DateTime $startDate;
-    private \DateTime $endDate;
-    private User $trainer;
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer", unique=true)
+     */
+    private int $id;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    public ?string $name;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    public ?string $description;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private \DateTime $startTime;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private \DateTime $endTime;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="trainer_id", referencedColumnName="id")
+     */
+    private ?User $trainer;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Room")
+     * @ORM\JoinColumn(name="room_id", referencedColumnName="id")
+     */
     private Room $room;
-    private ?Collection $customers;
-    private bool $isOnline;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="User", inversedBy="programmes")
+     * @ORM\JoinTable(name="programmes_customers")
+     */
+    private Collection $customers;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private ?bool $isOnline;
+
+
+    /**
+     * @param Collection $customers
+     **/
+    public function __construct()
+    {
+        $this->customers = new ArrayCollection();
+    }
 
     public function getId(): int
     {
-        return $this->id;
+//        return $this->id;
+
+        return $this;
     }
 
     public function getName(): string
@@ -40,24 +98,24 @@ class Programme
         $this->description = $description;
     }
 
-    public function getStartDate(): \DateTime
+    public function getStartTime(): \DateTime
     {
-        return $this->startDate;
+        return $this->startTime;
     }
 
-    public function setStartDate(\DateTime $startDate): void
+    public function setStartTime(\DateTime $startTime): void
     {
-        $this->startDate = $startDate;
+        $this->startTime = $startTime;
     }
 
-    public function getEndDate(): \DateTime
+    public function getEndTime(): \DateTime
     {
-        return $this->endDate;
+        return $this->endTime;
     }
 
-    public function setEndDate(\DateTime $endDate): void
+    public function setEndTime(\DateTime $endTime): void
     {
-        $this->endDate = $endDate;
+        $this->endTime = $endTime;
     }
 
     public function getTrainer(): User
@@ -80,14 +138,14 @@ class Programme
         $this->room = $room;
     }
 
-    public function getCustomers(): ?Collection
+    public function getCustomers(): ArrayCollection
     {
         return $this->customers;
     }
 
-    public function setCustomers(?Collection $customers): void
+    public function setCustomers(Collection $customers): self
     {
-        $this->customers = $customers;
+        return $this;
     }
 
     public function isOnline(): bool
@@ -98,5 +156,17 @@ class Programme
     public function setIsOnline(bool $isOnline): void
     {
         $this->isOnline = $isOnline;
+    }
+
+    public function addCustomer(User $customer): self
+    {
+        if ($this->customers->contains($customer)) {
+            return $this;
+        }
+
+        $this->customers->add($customer);
+        $customer->addProgramme($this);
+
+        return $this;
     }
 }

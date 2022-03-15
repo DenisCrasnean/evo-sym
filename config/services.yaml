@@ -26,3 +26,8 @@ services:
     App\Controller\:
         resource: '../src/Controller/'
         tags: [ 'controller.service_arguments' ]
+
+    App\Controller\ArgumentResolver\:
+        resource: '../src/Controller/ArgumentResolver/'
+        tags:
+        - { name: controller.argument_value_resolver, priority: 50 }
