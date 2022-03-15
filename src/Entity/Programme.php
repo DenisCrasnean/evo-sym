@@ -2,10 +2,9 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use App\Entity\User;
 
 /**
  * @ORM\Entity
@@ -61,7 +60,6 @@ class Programme
      * @ORM\Column(type="boolean")
      */
     private ?bool $isOnline;
-
 
     /**
      * @param Collection $customers

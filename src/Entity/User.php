@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
+use App\Controller\Dto\UserDto;
+use App\Validator as MyAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Controller\Dto\UserDto;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
@@ -21,33 +23,39 @@ class User
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Email
      */
     public ?string $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @MyAssert\Password
      */
     public ?string $password;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=13, options={"fixed" = true})
+     * @MyAssert\Cnp
      */
     public ?string $cnp;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Regex("/[A-Z][a-z]+/")
      */
     public ?string $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Regex("/[A-Z][a-z]+/")
      */
     public ?string $lastName;
 
     /**
      * @ORM\Column(type="json")
      */
-    public array $roles;
+    public array $roles = [];
 
     /**
      * @ORM\ManyToMany(targetEntity="Programme", mappedBy="customers")
@@ -119,21 +127,15 @@ class User
         $this->lastName = $lastName;
     }
 
-    /**
-     * @return array
-     */
     public function getRoles(): array
     {
         return $this->roles;
     }
 
-    /**
-     * @param array $roles
-     * @return User
-     */
     public function setRoles(array $roles): User
     {
         $this->roles = $roles;
+
         return $this;
     }
 

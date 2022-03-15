@@ -36,18 +36,15 @@ class Building
         return $this->startTime;
     }
 
-
     public function setStartTime(DateTime $startTime): void
     {
         $this->startTime = $startTime;
     }
 
-
     public function getEndTime(): DateTime
     {
         return $this->endTime;
     }
-
 
     public function setEndTime(DateTime $endTime): void
     {
