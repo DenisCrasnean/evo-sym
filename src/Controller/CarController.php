@@ -15,9 +15,6 @@ class CarController
 {
     private EntityManagerInterface $entityManager;
 
-    /**
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
@@ -53,7 +50,7 @@ class CarController
 //        $this->entityManager->persist($programme);
 //
 //        /** @var Programme $programme */
-////        $programme->setCustomers($programme->getCustomers()->add($programme));
+        // //        $programme->setCustomers($programme->getCustomers()->add($programme));
 //
 //        $customer->addProgramme($programme);
 //
