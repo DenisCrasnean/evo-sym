@@ -1,0 +1,15 @@
+name: PHP Code Style Fixer
+
+on:
+  workflow_run:
+    workflows: [ "Set Up Env" ]
+  push:
+    branches:
+      - 'feature/**'
+
+jobs:
+  check-psr-compatibility:
+    - name: PHP Code Style Fixer (php-cs-fixer)e
+        uses: StephaneBour/actions-php-cs-fixer@8.1
+        with:
+          dir: ./src

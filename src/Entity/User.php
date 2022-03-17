@@ -14,6 +14,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class User
 {
+    public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
+    public const ROLES = ['ROLE_USER', 'ROLE_ADMIN'];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -134,7 +138,7 @@ class User
 
     public function setRoles(array $roles): User
     {
-        $this->roles = $roles;
+        $this->roles = array_values(array_unique($roles));
 
         return $this;
     }
@@ -164,7 +168,6 @@ class User
     public static function createFromDto(UserDto $userDto): self
     {
         $user = new self();
-        $user->setRoles(['customer']);
         $user->cnp = $userDto->cnp;
         $user->firstName = $userDto->firstName;
         $user->lastName = $userDto->lastName;
