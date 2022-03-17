@@ -16,7 +16,7 @@ class UserDto
 
     public string $password;
 
-    public string $cnp;
+    public ?string $cnp;
 
     public array $roles = [];
 
