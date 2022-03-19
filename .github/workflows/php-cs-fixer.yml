@@ -9,7 +9,6 @@ on:
 
 jobs:
   check-psr-compatibility:
-    - name: PHP Code Style Fixer (php-cs-fixer)e
-        uses: StephaneBour/actions-php-cs-fixer@8.1
-        with:
-          dir: ./src
+      uses: StephaneBour/actions-php-cs-fixer@8.1
+      with:
+        dir: ./src
