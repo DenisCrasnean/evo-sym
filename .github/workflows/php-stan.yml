@@ -80,6 +80,8 @@ runs:
         && ${{ github.action_path }}/phpstan-action.bash || { echo "::group::Debug output" ; cat ${{ github.workspace }}/output.log ; echo "::endgroup::" ; exit 1; }
       shell: bash
 
+on:
+jobs:
 branding:
   icon: 'check-square'
   color: 'purple'
