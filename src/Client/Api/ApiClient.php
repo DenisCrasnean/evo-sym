@@ -3,7 +3,7 @@
 namespace App\Client\Api;
 
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\Exception\RequestExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
@@ -22,7 +22,6 @@ abstract class ApiClient implements ApiClientInterface
 
     public function fetch(string $method, string $url, array $options = []): object
     {
-        $response = null;
         try {
             $response = $this->client->request(
                 $method,
@@ -32,13 +31,13 @@ abstract class ApiClient implements ApiClientInterface
 
             $this->logger->info(
                 'Request for  '.$url.' endpoint completed successfully!',
-                $this->loggerContext($response),
+                $this->defaultLoggerContext($response),
             );
-        } catch (BadRequestException $e) {
+        } catch (RequestExceptionInterface $e) {
             $this->logger->error(
                 'Request for '.$url.' endpoint failed!',
                 [
-                    $this->loggerContext($response),
+                    $this->defaultLoggerContext($response),
                     'endpoint' => $url,
                     'exception' => $e,
                     'exception_message' => $e->getMessage(),
@@ -48,20 +47,24 @@ abstract class ApiClient implements ApiClientInterface
             $this->logger->error(
                 'Request for '.$url.' endpoint failed!',
                 [
-                    $this->loggerContext($response),
+                    $this->defaultLoggerContext($response),
                     'endpoint' => $url,
                     'exception' => $e,
                     'exception_message' => $e->getMessage(),
                 ]
             );
-            //  TO DO
-            //  Implement Custom Exception for missing response
         }
 
         return $response;
     }
 
-    protected function loggerContext(ResponseInterface $response): array
+    /**
+     * @throws TransportExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     */
+    protected function defaultLoggerContext(ResponseInterface $response): array
     {
         return [
             'status_code' => $response->getStatusCode(),
