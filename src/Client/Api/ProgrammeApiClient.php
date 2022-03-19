@@ -13,6 +13,7 @@ class ProgrammeApiClient extends ApiClient
 
     public function __construct(HttpClientInterface $programmeClient, LoggerInterface $programmeLogger)
     {
+        $test = "Just a test becaue I cleaned up dome branches";
         parent::__construct($programmeClient, $programmeLogger);
     }
 }
