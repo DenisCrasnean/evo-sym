@@ -14,44 +14,42 @@ abstract class ApiClient implements ApiClientInterface
 
     private LoggerInterface $logger;
 
-    protected string $resourceName;
-
     public function __construct(HttpClientInterface $client, LoggerInterface $logger)
     {
         $this->client = $client;
         $this->logger = $logger;
     }
 
-    public function fetch(string $method, string $endpoint, array $options = []): object
+    public function fetch(string $method, string $url, array $options = []): object
     {
         $response = null;
         try {
             $response = $this->client->request(
                 $method,
-                $endpoint,
+                $url,
                 $options
             );
 
             $this->logger->info(
-                'Request for '.$this->resourceName.' to '.$endpoint.' endpoint completed successfully!',
+                'Request for  '.$url.' endpoint completed successfully!',
                 $this->loggerContext($response),
             );
         } catch (BadRequestException $e) {
             $this->logger->error(
-                'Request for '.$this->resourceName.' to '.$endpoint.' endpoint failed!',
+                'Request for '.$url.' endpoint failed!',
                 [
                     $this->loggerContext($response),
-                    'endpoint' => $endpoint,
+                    'endpoint' => $url,
                     'exception' => $e,
                     'exception_message' => $e->getMessage(),
                 ]
             );
         } catch (TransportExceptionInterface $e) {
             $this->logger->error(
-                'Request for '.$this->resourceName.' to '.$endpoint.' endpoint failed!',
+                'Request for '.$url.' endpoint failed!',
                 [
                     $this->loggerContext($response),
-                    'endpoint' => $endpoint,
+                    'endpoint' => $url,
                     'exception' => $e,
                     'exception_message' => $e->getMessage(),
                 ]
