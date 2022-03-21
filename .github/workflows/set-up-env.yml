@@ -3,7 +3,7 @@ name: Set Up Env
 on:
   pull_request:
     branches:
-    - 'master'
+    - 'develop'
     - 'feature/**'
 
 jobs:

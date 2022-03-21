@@ -5,6 +5,7 @@ on:
     workflows: [ "Set Up Env" ]
   push:
     branches:
+      - 'develop'
       - 'feature/**'
 
 jobs:

@@ -5,13 +5,14 @@ on:
     workflows: [ "Set Up Env" ]
   push:
     branches:
+      - 'develop'
       - 'feature/**'
 
 jobs:
-  check-psr-compatibility:
+  php-cs-fixer:
+    name: PHP-CS-Fixer
     runs-on: ubuntu-latest
-
     steps:
-      - uses: StephaneBour/actions-php-cs-fixer@8.1
-      with:
-        path: ./src
+      - uses: actions/checkout@v2
+      - name: PHP-CS-Fixer
+        uses: docker://oskarstark/php-cs-fixer-ga
