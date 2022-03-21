@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Controller\Dto\DtoInterface;
 use App\Controller\Dto\UserDto;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,22 +19,21 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CreateAccountCommand extends Command
 {
-    protected static $defaultName = "app:account:create";
+    protected static $defaultName = 'app:account:create';
 
     private EntityManagerInterface $entityManager;
 
     private ValidatorInterface $validator;
 
-    private UserDto $userDto;
+    private DtoInterface $userDto;
 
     private string $plainPassword;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         ValidatorInterface $validator,
-        UserDto $userDto
-    )
-    {
+        DtoInterface $userDto
+    ) {
         $this->entityManager = $entityManager;
         $this->validator = $validator;
         $this->userDto = $userDto;
@@ -50,7 +50,7 @@ class CreateAccountCommand extends Command
         $this->addOption(
             'role',
             null,
-            InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+            InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
             'User\'s role',
             ['ROLE_ADMIN']
         );
@@ -59,7 +59,7 @@ class CreateAccountCommand extends Command
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $helper = $this->getHelper('question');
-        $question = new Question('Enter a stong password');
+        $question = new Question('Enter a stong password: ');
         $question->setHidden(true);
         $this->plainPassword = $helper->ask($input, $output, $question);
     }
@@ -68,7 +68,17 @@ class CreateAccountCommand extends Command
     {
         $inputOutput = new SymfonyStyle($input, $output);
 
-        $user = User::createFromDto($this->userDto);
+        $data = [
+            'firstName' => $input->getArgument('firstName'),
+            'lastName' => $input->getArgument('lastName'),
+            'email' => $input->getArgument('email'),
+            'cnp' => $input->getArgument('cnp'),
+            'password' => $input->getParameterOption('password'),
+//            'roles' => $input->getOption('role'),
+        ];
+
+        $user =  $this->userDto->fromArray($data);
+
         $errors = $this->validator->validate($user);
 
         if (count($errors) > 0) {
@@ -88,11 +98,11 @@ class CreateAccountCommand extends Command
         $this->entityManager->persist($user);
         $this->entityManager->flush();
         $this->entityManager->refresh($user);
-        $savedUserDto = $this->userDto->createFromUser($user);
+        $savedUserDto = $this->userDto->fromObject($user);
 
         $successMessage = [
             'User account with the role of successfully created!',
-            $savedUserDto
+            $savedUserDto,
         ];
 
         $inputOutput->success($successMessage);

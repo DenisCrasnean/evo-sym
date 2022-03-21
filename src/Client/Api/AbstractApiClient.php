@@ -8,7 +8,7 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
-abstract class ApiClient implements ApiClientInterface
+abstract class AbstractApiClient implements ApiClientInterface
 {
     private HttpClientInterface $client;
 
@@ -20,7 +20,7 @@ abstract class ApiClient implements ApiClientInterface
         $this->logger = $logger;
     }
 
-    public function fetch(string $method, string $url, array $options = []): object
+    public function fetch(string $method, string $url, array $options = []): ResponseInterface
     {
         try {
             $response = $this->client->request(
