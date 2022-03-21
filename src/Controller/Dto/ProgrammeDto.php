@@ -35,35 +35,32 @@ class ProgrammeDto extends AbstractDto
     private bool $isOnline;
 
     /**
-     * @param Programme $object
-     * @return Programme
+     * @param Programme $entity
      */
-    public function fromObject($object): Programme
+    public function fromObject($entity): Programme
     {
         $dto = new Programme();
-        $dto->setName($object->getName())
-            ->setDescription($object->getDescription())
-            ->setStartDate(new \DateTime($object->getStartDate()))
-            ->setEndDate(new \DateTime($object->getEndDate()))
-            ->setIsOnline($object->getIsOnline());
+        $dto->setName($entity->getName())
+            ->setDescription($entity->getDescription())
+            ->setStartDate(new \DateTime($entity->getStartDate()))
+            ->setEndDate(new \DateTime($entity->getEndDate()))
+            ->setIsOnline($entity->getIsOnline());
 
         return $dto;
     }
 
     /**
-     * @param array $data
-     * @return Programme
      * @throws \Exception
      */
     public function fromArray(array $data): Programme
     {
-       $programme = new Programme();
-       $programme->setName((string) $data['name'])
+        $programme = new Programme();
+        $programme->setName((string) $data['name'])
            ->setDescription((string) $data['description'])
            ->setStartDate(new \DateTime($data['startDate']))
            ->setEndDate(new \DateTime($data['endDate']))
            ->setIsOnline((bool) $data['isOnline']);
 
-       return $programme;
+        return $programme;
     }
 }

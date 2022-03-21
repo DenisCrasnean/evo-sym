@@ -45,34 +45,28 @@ class UserDto extends AbstractDto
     public array $roles = [];
 
     /**
-     * @param User $object
-     * @return User
+     * @param User $entity
      */
-    public function fromObject($object): User
+    public function fromObject($entity): User
     {
         $dto = new User();
-        $dto->setFirstName($object->getFirstName());
-        $dto->setLastName($object->getLastName());
-        $dto->setEmail($object->getEmail());
-        $dto->setCnp($object->getCnp());
-        $dto->setRoles($object->getRoles());
+        $dto->setFirstName($entity->getFirstName());
+        $dto->setLastName($entity->getLastName());
+        $dto->setEmail($entity->getEmail());
+        $dto->setCnp($entity->getCnp());
+        $dto->setRoles($entity->getRoles());
 
         return $dto;
     }
 
-    /**
-     * @param array $data
-     * @return User
-     * @throws \Exception
-     */
     public function fromArray(array $data): User
     {
         $dto = new User();
-        $dto->setFirstName((string) $data['firstName'])
-            ->setLastName((string) $data['lastName'])
-            ->setEmail((string) $data['email'])
-            ->setPassword((string) $data['password'])
-            ->setRoles(['customer']);
+        $dto->setFirstName($data['firstName'])
+            ->setLastName($data['lastName'])
+            ->setEmail($data['email'])
+            ->setPassword($data['password'])
+            ->setRoles($data['roles'] ?? ['ROLE_CUSTOMER']);
 
         return $dto;
     }

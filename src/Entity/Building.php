@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  */
-class Building
+class Building implements EntityInterface
 {
     /**
      * @ORM\Id()
@@ -31,22 +31,22 @@ class Building
         return $this->id;
     }
 
-    public function getStartTime(): DateTime
+    public function getStartTime(): \DateTime
     {
         return $this->startTime;
     }
 
-    public function setStartTime(DateTime $startTime): void
+    public function setStartTime(\DateTime $startTime): void
     {
         $this->startTime = $startTime;
     }
 
-    public function getEndTime(): DateTime
+    public function getEndTime(): \DateTime
     {
         return $this->endTime;
     }
 
-    public function setEndTime(DateTime $endTime): void
+    public function setEndTime(\DateTime $endTime): void
     {
         $this->endTime = $endTime;
     }

@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Controller\Dto\DtoInterface;
 use App\Controller\Dto\UserDto;
 use App\Entity\User;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -56,8 +55,7 @@ class UserController
         $this->entityManager->persist($user);
         $this->entityManager->flush();
         $this->entityManager->refresh($user);
-        $savedUserDto = UserDto::createFromUser($user);
-
+        $savedUserDto = $userDto->fromObject($user);
         $this->logger->info('User created successfully!', ['email' => $savedUserDto->email]);
 
         return new JsonResponse($savedUserDto, Response::HTTP_CREATED);

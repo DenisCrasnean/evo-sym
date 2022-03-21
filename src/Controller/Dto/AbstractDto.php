@@ -11,7 +11,7 @@ abstract class AbstractDto implements DtoInterface
         $dto = [];
 
         foreach ($data as $item) {
-            $dto[] = $this->buildFromArray($item);
+            $dto[] = $this->fromArray($item);
         }
 
         return $dto;
@@ -22,7 +22,7 @@ abstract class AbstractDto implements DtoInterface
         $dto = [];
 
         foreach ($objects as $object) {
-            $dto[] = $this->buildFromObject($object);
+            $dto[] = $this->fromObject($object);
         }
 
         return $dto;

@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Controller\Dto\UserDto;
 use App\Validator as MyAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,9 +11,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity
  */
-class User
+class User implements EntityInterface
 {
-    public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_USER = 'ROLE_CUSTOMER';
     public const ROLE_ADMIN = 'ROLE_ADMIN';
     public const ROLES = ['ROLE_USER', 'ROLE_ADMIN'];
 
@@ -87,13 +86,10 @@ class User
         return $this->email;
     }
 
-    /**
-     * @param string|null $email
-     * @return User
-     */
     public function setEmail(?string $email): User
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -107,11 +103,11 @@ class User
 
     /**
      * @param string|null $password
-     * @return User
      */
     public function setPassword(string $password): User
     {
         $this->password = $password;
+
         return $this;
     }
 
@@ -123,13 +119,10 @@ class User
         return $this->cnp;
     }
 
-    /**
-     * @param string|null $cnp
-     * @return User
-     */
     public function setCnp(?string $cnp): User
     {
         $this->cnp = $cnp;
+
         return $this;
     }
 
@@ -143,11 +136,11 @@ class User
 
     /**
      * @param string|null $firstName
-     * @return User
      */
     public function setFirstName(string $firstName): User
     {
         $this->firstName = $firstName;
+
         return $this;
     }
 
@@ -161,17 +154,14 @@ class User
 
     /**
      * @param string|null $lastName
-     * @return User
      */
     public function setLastName(string $lastName): User
     {
         $this->lastName = $lastName;
+
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getRoles(): array
     {
         return $this->roles;
@@ -179,11 +169,12 @@ class User
 
     /**
      * @param array $roles
-     * @return User
+     * @return $this
      */
     public function setRoles(array $roles): User
     {
         $this->roles = $roles;
+
         return $this;
     }
 
@@ -197,11 +188,13 @@ class User
 
     /**
      * @param ArrayCollection|Collection $programmes
+     *
      * @return User
      */
     public function setProgrammes($programmes): ArrayCollection
     {
         $this->programmes = $programmes;
+
         return $this;
     }
 }
