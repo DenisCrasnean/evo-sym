@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\Programme;
+use Doctrine\DBAL\Exception;
 use App\Client\Api\ApiClientInterface;
 use App\Controller\Dto\DtoInterface;
 use App\Encryption\EncryptionInterface;

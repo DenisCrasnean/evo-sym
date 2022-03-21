@@ -33,4 +33,3 @@ class CaesarEncryption implements EncryptionInterface
 
         return $output;
     }
-}
