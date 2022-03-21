@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Client\Api\ProgrammeApiClient;
 use App\Entity\Programme;
 use Doctrine\DBAL\Exception;
 use App\Client\Api\ApiClientInterface;
@@ -19,9 +18,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ImportProgrammeFromApiCommand extends Command
 {
     protected static $defaultName = 'app:programme:import-from-api';
-
-
-    private ProgrammeApiClient $programmeApiClient;
 
     private ApiClientInterface $programmeApiClient;
 
@@ -44,7 +40,7 @@ class ImportProgrammeFromApiCommand extends Command
 
         parent::__construct();
     }
-  
+
     /**
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
