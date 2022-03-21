@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use App\Controller\Dto\DtoInterface;
 use App\Controller\Dto\UserDto;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -17,7 +19,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  **/
 class UserController
 {
-    private EntityManager $entityManager;
+    private EntityManagerInterface $entityManager;
     private ValidatorInterface $validator;
     private LoggerInterface $logger;
 
@@ -33,9 +35,9 @@ class UserController
      *
      * @throws \Doctrine\ORM\ORMException
      */
-    public function store(UserDto $userDto): Response
+    public function store(Request $request, DtoInterface $userDto): Response
     {
-        $user = User::createFromDto($userDto);
+        $user = $userDto->fromArray($request->toArray());
 
         $errors = $this->validator->validate($user);
 

@@ -31,12 +31,12 @@ class Programme
     /**
      * @ORM\Column(type="datetime")
      */
-    private \DateTime $startTime;
+    private \DateTime $startDate;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private \DateTime $endTime;
+    private \DateTime $endDate;
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
@@ -71,59 +71,67 @@ class Programme
 
     public function getId(): int
     {
-//        return $this->id;
-
-        return $this;
+        return $this->id;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName(string $name): void
+    public function setName(?string $name): Programme
     {
         $this->name = $name;
+
+        return $this;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setDescription(string $description): void
+    public function setDescription(?string $description): Programme
     {
         $this->description = $description;
+
+        return $this;
     }
 
-    public function getStartTime(): \DateTime
+    public function getStartDate(): \DateTime
     {
-        return $this->startTime;
+        return $this->startDate;
     }
 
-    public function setStartTime(\DateTime $startTime): void
+    public function setStartDate(\DateTime $startDate): Programme
     {
-        $this->startTime = $startTime;
+        $this->startDate = $startDate;
+
+        return $this;
     }
 
-    public function getEndTime(): \DateTime
+    public function getEndDate(): \DateTime
     {
-        return $this->endTime;
+        return $this->endDate;
     }
 
-    public function setEndTime(\DateTime $endTime): void
+    public function setEndDate(\DateTime $endDate): Programme
     {
-        $this->endTime = $endTime;
+        $this->endDate = $endDate;
+
+        return $this;
     }
 
-    public function getTrainer(): User
+    public function getTrainer(): ?User
     {
         return $this->trainer;
     }
 
-    public function setTrainer(User $trainer): void
+    public function setTrainer(?User $trainer): Programme
     {
         $this->trainer = $trainer;
+
+        return $this;
     }
 
     public function getRoom(): Room
@@ -131,29 +139,41 @@ class Programme
         return $this->room;
     }
 
-    public function setRoom(Room $room): void
+    public function setRoom(Room $room): Programme
     {
         $this->room = $room;
+
+        return $this;
     }
 
-    public function getCustomers(): ArrayCollection
+    /**
+     * @return ArrayCollection|Collection
+     */
+    public function getCustomers()
     {
         return $this->customers;
     }
 
-    public function setCustomers(Collection $customers): self
+    /**
+     * @param ArrayCollection|Collection $customers
+     */
+    public function setCustomers($customers): Programme
     {
+        $this->customers = $customers;
+
         return $this;
     }
 
-    public function isOnline(): bool
+    public function getIsOnline(): ?bool
     {
         return $this->isOnline;
     }
 
-    public function setIsOnline(bool $isOnline): void
+    public function setIsOnline(?bool $isOnline): Programme
     {
         $this->isOnline = $isOnline;
+
+        return $this;
     }
 
     public function addCustomer(User $customer): self
