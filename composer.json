@@ -24,7 +24,6 @@
         "symfony/security-bundle": "5.4.*",
         "symfony/security-csrf": "5.4.*",
         "symfony/serializer": "5.4.*",
-        "symfony/uid": "5.4.*",
         "symfony/validator": "5.4.*",
         "symfony/yaml": "5.4.*"
     },
@@ -32,8 +31,6 @@
         "allow-plugins": {
             "composer/package-versions-deprecated": true,
             "symfony/flex": true,
-            "symfony/runtime": true,
-            "phpstan/extension-installer": false
             "symfony/runtime": true
         },
         "optimize-autoloader": true,
