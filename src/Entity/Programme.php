@@ -2,12 +2,16 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ProgrammeRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass=ProgrammeRepository::class)
+ * @ORM\Table(name="programme")
  */
 class Programme implements EntityInterface
 {
@@ -15,55 +19,66 @@ class Programme implements EntityInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer", unique=true)
+     * @Groups("api:programme:fetchAll")
      */
     private int $id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255)
+     * @Groups("api:programme:fetchAll")
      */
-    public ?string $name;
+    private string $name;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text")
+     * @Groups("api:programme:fetchAll")
      */
-    public ?string $description;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private \DateTime $startDate;
+    private string $description;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("api:programme:fetchAll")
      */
-    private \DateTime $endDate;
+    private DateTime $startTime;
+
+    /**
+     * @ORM\Column(type="datetime")
+     * @Groups("api:programme:fetchAll")
+     */
+    private DateTime $endTime;
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="trainer_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="trainer_id", referencedColumnName="id", nullable=true)
+     * @Groups("api:programme:fetchAll")
      */
     private ?User $trainer;
 
     /**
      * @ORM\ManyToOne(targetEntity="Room")
-     * @ORM\JoinColumn(name="room_id", referencedColumnName="id")
+     * @ORM\JoinColumn (name="room_id", referencedColumnName="id", nullable=true)
+     * @Groups("api:programme:fetchAll")
      */
-    private Room $room;
+    private ?Room $room;
 
     /**
      * @ORM\ManyToMany(targetEntity="User", inversedBy="programmes")
      * @ORM\JoinTable(name="programmes_customers")
+     * @Groups("api:programme:fetchAll")
      */
     private Collection $customers;
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups("api:programme:fetchAll")
+     */
+    private int $maxParticipants;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups("api:programme:fetchAll")
      */
-    private ?bool $isOnline;
+    private bool $isOnline;
 
-    /**
-     * @param Collection $customers
-     **/
     public function __construct()
     {
         $this->customers = new ArrayCollection();
@@ -98,26 +113,26 @@ class Programme implements EntityInterface
         return $this;
     }
 
-    public function getStartDate(): \DateTime
+    public function getStartTime(): DateTime
     {
-        return $this->startDate;
+        return $this->startTime;
     }
 
-    public function setStartDate(\DateTime $startDate): Programme
+    public function setStartTime(DateTime $startTime): Programme
     {
-        $this->startDate = $startDate;
+        $this->startTime = $startTime;
 
         return $this;
     }
 
-    public function getEndDate(): \DateTime
+    public function getEndTime(): DateTime
     {
-        return $this->endDate;
+        return $this->endTime;
     }
 
-    public function setEndDate(\DateTime $endDate): Programme
+    public function setEndTime(DateTime $endTime): Programme
     {
-        $this->endDate = $endDate;
+        $this->endTime = $endTime;
 
         return $this;
     }
@@ -134,12 +149,12 @@ class Programme implements EntityInterface
         return $this;
     }
 
-    public function getRoom(): Room
+    public function getRoom(): ?Room
     {
         return $this->room;
     }
 
-    public function setRoom(Room $room): Programme
+    public function setRoom(?Room $room): Programme
     {
         $this->room = $room;
 
@@ -164,6 +179,17 @@ class Programme implements EntityInterface
         return $this;
     }
 
+    public function getMaxParticipants(): int
+    {
+        return $this->maxParticipants;
+    }
+
+    public function setMaxParticipants(int $maxParticipants): Programme
+    {
+        $this->maxParticipants = $maxParticipants;
+        return $this;
+    }
+
     public function getIsOnline(): ?bool
     {
         return $this->isOnline;
@@ -172,18 +198,6 @@ class Programme implements EntityInterface
     public function setIsOnline(?bool $isOnline): Programme
     {
         $this->isOnline = $isOnline;
-
-        return $this;
-    }
-
-    public function addCustomer(User $customer): self
-    {
-        if ($this->customers->contains($customer)) {
-            return $this;
-        }
-
-        $this->customers->add($customer);
-        $customer->addProgramme($this);
 
         return $this;
     }

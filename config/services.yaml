@@ -31,13 +31,9 @@ services:
         resource: '../src/Controller/'
         tags: [ 'controller.service_arguments' ]
 
-    #  Dto's available in the app
-#    App\Controller\Dto\DtoInterface:
-#        autowire: true      # Automatically injects dependencies in your services.
-#        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-#        namespace: App\Controller\Dto\
-#        resource: '../src/Controller/Dto/'
-#        tags: [ 'app.dto' ]
+    App\Controller\ArgumentResolver\ProgrammeFilterArgumentResolver:
+        tags:
+            - { name: controller.argument_value_resolver, priority: 50 }
 
     App\Encryption\EncryptionInterface $caesarEncryption: '@App\Encryption\CaesarEncryption'
     App\Encryption\CaesarEncryption:
