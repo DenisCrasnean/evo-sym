@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Controller\Dto\DtoInterface;
-use App\Controller\Dto\UserDto;
-use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -56,10 +54,10 @@ class CreateAccountCommand extends Command
         );
     }
 
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $helper = $this->getHelper('question');
-        $question = new Question('Enter a stong password: ');
+        $question = new Question('Enter a strong password: ');
         $question->setHidden(true);
         $this->plainPassword = $helper->ask($input, $output, $question);
     }
@@ -73,7 +71,7 @@ class CreateAccountCommand extends Command
             'lastName' => $input->getArgument('lastName'),
             'email' => $input->getArgument('email'),
             'cnp' => $input->getArgument('cnp'),
-            'password' => $input->getParameterOption('password'),
+            'password' => $this->plainPassword,
 //            'roles' => $input->getOption('role'),
         ];
 
