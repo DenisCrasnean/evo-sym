@@ -2,59 +2,60 @@
 
 namespace App\Entity;
 
-use App\Controller\Dto\UserDto;
 use App\Validator as MyAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
  */
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityInterface
 {
-    public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_USER = 'ROLE_CUSTOMER';
     public const ROLE_ADMIN = 'ROLE_ADMIN';
-    public const ROLES = ['ROLE_USER', 'ROLE_ADMIN'];
+    public const ROLES = ['ROLE_CUSTOMER', 'ROLE_ADMIN'];
 
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", unique=true)
      */
     private int $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Email
      */
-    public ?string $email;
+    private string $email;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @MyAssert\Password
      */
-    public ?string $password;
+    private string $password;
 
     /**
      * @ORM\Column(type="string", length=13, options={"fixed" = true})
      * @MyAssert\Cnp
      */
-    public ?string $cnp;
+    private string $cnp;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
      * @Assert\Regex("/[A-Z][a-z]+/")
      */
-    public ?string $firstName;
+    private ?string $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\Regex("/[A-Z][a-z]+/")
      */
-    public ?string $lastName;
+    private ?string $lastName;
 
     /**
      * @ORM\Column(type="json")
@@ -66,9 +67,6 @@ class User
      */
     private Collection $programmes;
 
-    /**
-     * @param Collection $programmes
-     **/
     public function __construct()
     {
         $this->programmes = new ArrayCollection();
@@ -79,14 +77,56 @@ class User
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
+    public function getCnp(): string
+    {
+        return $this->cnp;
+    }
+
+    /**
+     * @param string $cnp
+     * @return User
+     */
+    public function setCnp(string $cnp): User
+    {
+        $this->cnp = $cnp;
+        return $this;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(?string $firstName): User
+    {
+        $this->firstName = $firstName;
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(?string $lastName): User
+    {
+        $this->lastName = $lastName;
+        return $this;
+    }
+
     public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): void
+    public function setEmail(?string $email): User
     {
         $this->email = $email;
+
+        return $this;
     }
 
     public function getPassword(): string
@@ -94,41 +134,11 @@ class User
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(string $password): User
     {
         $this->password = $password;
 
         return $this;
-    }
-
-    public function getCnp(): string
-    {
-        return $this->cnp;
-    }
-
-    public function setCnp(string $cnp): void
-    {
-        $this->cnp = $cnp;
-    }
-
-    public function getFirstName(): string
-    {
-        return $this->firstName;
-    }
-
-    public function setFirstName(string $firstName): void
-    {
-        $this->firstName = $firstName;
-    }
-
-    public function getLastName(): string
-    {
-        return $this->lastName;
-    }
-
-    public function setLastName(string $lastName): void
-    {
-        $this->lastName = $lastName;
     }
 
     public function getRoles(): array
@@ -138,42 +148,46 @@ class User
 
     public function setRoles(array $roles): User
     {
-        $this->roles = array_values(array_unique($roles));
+        $this->roles = $roles;
 
         return $this;
     }
 
-    public function getProgrammes(): Collection
+    /**
+     * @return ArrayCollection|Collection
+     */
+    public function getProgrammes()
     {
         return $this->programmes;
     }
 
-    public function setProgrammes(Collection $programmes): void
+    /**
+     * @param ArrayCollection|Collection $programmes
+     */
+    public function setProgrammes($programmes): User
     {
         $this->programmes = $programmes;
-    }
-
-    public function addProgramme(Programme $programme): self
-    {
-        if ($this->programmes->contains($programme)) {
-            return $this;
-        }
-
-        $this->programmes->add($programme);
-        $programme->addCustomer($this);
 
         return $this;
     }
 
-    public static function createFromDto(UserDto $userDto): self
+    public function getSalt()
     {
-        $user = new self();
-        $user->cnp = $userDto->cnp;
-        $user->firstName = $userDto->firstName;
-        $user->lastName = $userDto->lastName;
-        $user->email = $userDto->email;
-        $user->setPassword($userDto->password);
+        // TODO: Implement getSalt() method.
+    }
 
-        return $user;
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getUsername(): string
+    {
+        return $this->email;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
     }
 }

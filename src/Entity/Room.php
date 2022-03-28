@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  */
-class Room
+class Room implements EntityInterface
 {
     /**
      * @ORM\Id()

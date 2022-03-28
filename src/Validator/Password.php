@@ -9,5 +9,5 @@ use Symfony\Component\Validator\Constraint;
  */
 class Password extends Constraint
 {
-    public $message = 'The is not a valid Password';
+    public string $message = 'The is not a valid Password';
 }
