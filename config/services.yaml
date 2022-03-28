@@ -20,14 +20,14 @@ services:
         resource: '../src/Controller/'
         tags: [ 'controller.service_arguments' ]
 
+    App\Controller\ArgumentResolver\ProgrammeFilterArgumentResolver:
+        tags:
+            - { name: controller.argument_value_resolver, priority: 50 }
+            
     App\Encryption\EncryptionInterface $caesarEncryption: '@App\Encryption\CaesarEncryption'
     App\Encryption\CaesarEncryption:
         bind:
             $programmeImportApiEncryptionKey: '%env(PROGRAMME_IMPORT_API_ENCRYPTION_KEY)%'
-
-    App\Controller\ArgumentResolver\FilterArgumentValueResolver:
-        tags:
-            - { name: controller.argument_value_resolver, priority: 50 }
 
     App\Controller\Dto\DtoInterface $userDto: '@App\Controller\Dto\UserDto'
     App\Controller\Dto\DtoInterface $programmeDto: '@App\Controller\Dto\ProgrammeDto'
