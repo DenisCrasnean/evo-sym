@@ -1,7 +1,7 @@
-
 /.idea
 /symfony.lock
 /composer.lock
+/.env
 /.env.test
 /.env.local
 /.env.local.php
