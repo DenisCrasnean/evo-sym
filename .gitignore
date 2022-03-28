@@ -1,5 +1,4 @@
 
-###> symfony/framework-bundle ###
 /.idea
 /symfony.lock
 /composer.lock
@@ -11,4 +10,3 @@
 /public/bundles/
 /var/
 /vendor/
-###< symfony/framework-bundle ###
