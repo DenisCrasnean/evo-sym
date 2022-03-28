@@ -43,7 +43,7 @@ class ImportProgrammeFromApiCommand extends Command
 
         parent::__construct();
     }
-
+  
     /**
      * @throws TransportExceptionInterface
      * @throws ServerExceptionInterface
