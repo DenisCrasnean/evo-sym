@@ -22,6 +22,7 @@ abstract class AbstractApiClient implements ApiClientInterface
 
     public function fetch(string $method, string $url, array $options = []): ResponseInterface
     {
+        $response = null;
         try {
             $response = $this->client->request(
                 $method,
@@ -30,7 +31,7 @@ abstract class AbstractApiClient implements ApiClientInterface
             );
 
             $this->logger->info(
-                'Request for  '.$url.' endpoint completed successfully!',
+                'Request for '.$url.' endpoint completed successfully!',
                 $this->defaultLoggerContext($response),
             );
         } catch (RequestExceptionInterface $e) {
@@ -58,13 +59,7 @@ abstract class AbstractApiClient implements ApiClientInterface
         return $response;
     }
 
-    /**
-     * @throws TransportExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
-     */
-    protected function defaultLoggerContext(ResponseInterface $response): array
+    public function defaultLoggerContext(ResponseInterface $response): array
     {
         return [
             'status_code' => $response->getStatusCode(),
