@@ -23,7 +23,7 @@ services:
     App\Controller\ArgumentResolver\ProgrammeFilterArgumentResolver:
         tags:
             - { name: controller.argument_value_resolver, priority: 50 }
-            
+
     App\Encryption\EncryptionInterface $caesarEncryption: '@App\Encryption\CaesarEncryption'
     App\Encryption\CaesarEncryption:
         bind:

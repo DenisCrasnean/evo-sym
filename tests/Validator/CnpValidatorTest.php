@@ -11,7 +11,7 @@ class CnpValidatorTest extends ConstraintValidatorTestCase
     public function testCnpIsNotValid()
     {
         $cnp = "154656";
-        $result = $this->validator->validate($cnp, new Cnp());
+        $this->validator->validate($cnp, new Cnp());
 
         $this->buildViolation("The is not a valid CNP")->assertRaised();
     }
@@ -19,7 +19,7 @@ class CnpValidatorTest extends ConstraintValidatorTestCase
     public function testCnpIsValid()
     {
         $cnp = "1941020303927";
-        $result = $this->validator->validate($cnp, new Cnp());
+        $this->validator->validate($cnp, new Cnp());
         $this->assertNoViolation();
     }
 
