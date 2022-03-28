@@ -1,7 +1,6 @@
 
 ###> symfony/framework-bundle ###
 /.idea
-
 /symfony.lock
 /composer.lock
 /.env.test
