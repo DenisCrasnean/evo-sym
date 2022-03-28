@@ -8,11 +8,11 @@ use App\Entity\EntityInterface;
 
 interface DtoInterface
 {
-    public function fromObject(EntityInterface $entity): EntityInterface;
+    public function fromObject(EntityInterface $object): EntityInterface;
 
     public function fromArray(array $data): EntityInterface;
 
-    public function fromArrayCollection(array $data): iterable;
+    public function fromObjectCollection(iterable $collection): iterable;
 
-    public function fromObjectCollection(iterable $objects): iterable;
+    public function fromArrayCollection(array $collection): array;
 }
