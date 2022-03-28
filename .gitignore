@@ -1,7 +1,5 @@
 
-###> symfony/framework-bundle ###
 /.idea
-
 /symfony.lock
 /composer.lock
 /.env.test
@@ -12,4 +10,3 @@
 /public/bundles/
 /var/
 /vendor/
-###< symfony/framework-bundle ###
