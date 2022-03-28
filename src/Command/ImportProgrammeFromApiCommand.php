@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Entity\Programme;
-use Doctrine\DBAL\Exception;
 use App\Client\Api\ApiClientInterface;
 use App\Controller\Dto\DtoInterface;
 use App\Encryption\EncryptionInterface;
@@ -14,6 +12,11 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class ImportProgrammeFromApiCommand extends Command
 {
@@ -42,11 +45,11 @@ class ImportProgrammeFromApiCommand extends Command
     }
 
     /**
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -55,17 +58,17 @@ class ImportProgrammeFromApiCommand extends Command
         $response = $response->toArray();
         $decryptedData = [];
 
-            foreach ($response['data'] as $data) {
-                $decryptedDataKeys = [];
-                $decryptedDataValues = [];
+        foreach ($response['data'] as $data) {
+            $decryptedDataKeys = [];
+            $decryptedDataValues = [];
 
-                foreach ($data as $key => $value) {
-                    $decryptedDataKeys[] = $key;
-                    $decryptedDataValues[] = $this->caesarEncryption->decrypt((string) $value);
-                }
-
-                $decryptedData[] = array_combine($decryptedDataKeys, $decryptedDataValues);
+            foreach ($data as $key => $value) {
+                $decryptedDataKeys[] = $key;
+                $decryptedDataValues[] = $this->caesarEncryption->decrypt((string) $value);
             }
+
+            $decryptedData[] = array_combine($decryptedDataKeys, $decryptedDataValues);
+        }
 
         $programmes = $this->programmeDto->fromArrayCollection($decryptedData);
 
