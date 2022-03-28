@@ -4,13 +4,10 @@ namespace App\Controller;
 
 use App\Controller\Dto\DtoInterface;
 use App\Controller\Filter\ProgrammeFilter;
-use App\Entity\Programme;
 use App\Repository\ProgrammeRepository;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PropertyInfo\PropertyInfoExtractorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -50,6 +47,8 @@ class ProgrammeController
      **/
     public function fetchAll(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
+        $error = $authenticationUtils->getLastAuthenticationError();
+
         $programmes = $this->programmeRepository
             ->findAll($this->programmeFilter->handle($request));
 

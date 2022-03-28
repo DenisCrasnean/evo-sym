@@ -6,54 +6,56 @@ use App\Validator as MyAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
  */
-class User implements EntityInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityInterface
 {
     public const ROLE_USER = 'ROLE_CUSTOMER';
     public const ROLE_ADMIN = 'ROLE_ADMIN';
-    public const ROLES = ['ROLE_USER', 'ROLE_ADMIN'];
+    public const ROLES = ['ROLE_CUSTOMER', 'ROLE_ADMIN'];
 
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", unique=true)
      */
     private int $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Email
      */
-    public string $email;
+    private string $email;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @MyAssert\Password
      */
-    public string $password;
+    private string $password;
 
     /**
      * @ORM\Column(type="string", length=13, options={"fixed" = true})
      * @MyAssert\Cnp
      */
-    public string $cnp;
+    private string $cnp;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
      * @Assert\Regex("/[A-Z][a-z]+/")
      */
-    public ?string $firstName;
+    private ?string $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\Regex("/[A-Z][a-z]+/")
      */
-    public ?string $lastName;
+    private ?string $lastName;
 
     /**
      * @ORM\Column(type="json")
@@ -65,9 +67,6 @@ class User implements EntityInterface
      */
     private Collection $programmes;
 
-    /**
-     * @param Collection $programmes
-     **/
     public function __construct()
     {
         $this->programmes = new ArrayCollection();
@@ -79,8 +78,45 @@ class User implements EntityInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
+    public function getCnp(): string
+    {
+        return $this->cnp;
+    }
+
+    /**
+     * @param string $cnp
+     * @return User
+     */
+    public function setCnp(string $cnp): User
+    {
+        $this->cnp = $cnp;
+        return $this;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(?string $firstName): User
+    {
+        $this->firstName = $firstName;
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(?string $lastName): User
+    {
+        $this->lastName = $lastName;
+        return $this;
+    }
+
     public function getEmail(): string
     {
         return $this->email;
@@ -93,71 +129,14 @@ class User implements EntityInterface
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPassword(): string
     {
         return $this->password;
     }
 
-    /**
-     * @param string|null $password
-     */
     public function setPassword(string $password): User
     {
         $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCnp(): string
-    {
-        return $this->cnp;
-    }
-
-    public function setCnp(?string $cnp): User
-    {
-        $this->cnp = $cnp;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFirstName(): string
-    {
-        return $this->firstName;
-    }
-
-    /**
-     * @param string|null $firstName
-     */
-    public function setFirstName(string $firstName): User
-    {
-        $this->firstName = $firstName;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getLastName(): string
-    {
-        return $this->lastName;
-    }
-
-    /**
-     * @param string|null $lastName
-     */
-    public function setLastName(string $lastName): User
-    {
-        $this->lastName = $lastName;
 
         return $this;
     }
@@ -167,10 +146,6 @@ class User implements EntityInterface
         return $this->roles;
     }
 
-    /**
-     * @param array $roles
-     * @return $this
-     */
     public function setRoles(array $roles): User
     {
         $this->roles = $roles;
@@ -188,13 +163,31 @@ class User implements EntityInterface
 
     /**
      * @param ArrayCollection|Collection $programmes
-     *
-     * @return User
      */
-    public function setProgrammes($programmes): ArrayCollection
+    public function setProgrammes($programmes): User
     {
         $this->programmes = $programmes;
 
         return $this;
+    }
+
+    public function getSalt()
+    {
+        // TODO: Implement getSalt() method.
+    }
+
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getUsername(): string
+    {
+        return $this->email;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
     }
 }
