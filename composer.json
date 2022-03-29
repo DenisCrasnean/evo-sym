@@ -34,6 +34,7 @@
             "symfony/flex": true,
             "symfony/runtime": true,
             "phpstan/extension-installer": false
+            "symfony/runtime": true
         },
         "optimize-autoloader": true,
         "preferred-install": {
