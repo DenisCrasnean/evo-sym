@@ -77,21 +77,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getCnp(): string
     {
         return $this->cnp;
     }
 
-    /**
-     * @param string $cnp
-     * @return User
-     */
     public function setCnp(string $cnp): User
     {
         $this->cnp = $cnp;
+
         return $this;
     }
 
@@ -103,6 +97,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     public function setFirstName(?string $firstName): User
     {
         $this->firstName = $firstName;
+
         return $this;
     }
 
@@ -114,6 +109,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     public function setLastName(?string $lastName): User
     {
         $this->lastName = $lastName;
+
         return $this;
     }
 
