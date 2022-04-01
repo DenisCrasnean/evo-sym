@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+
 use App\Entity\User;
 use App\Form\PasswordResetRequestType;
 use App\Form\PasswordResetType;
@@ -59,6 +60,7 @@ class AuthController extends AbstractController
         try {
             $user = $this->userRepository
                 ->findByPasswordResetToken($token);
+
         } catch (NoResultException|NonUniqueResultException $e) {
             $this->logger
                 ->error("User hasn't been found into the database by the repository method findByResetPasswordToken()!", [
@@ -111,6 +113,8 @@ class AuthController extends AbstractController
             try {
                 $user = $this->userRepository
                     ->findByEmail($email);
+
+                dd($user);
                 $passwordResetToken->generate($user);
                 $this->sendResetPasswordMail($user);
                 $this->logger
@@ -123,7 +127,6 @@ class AuthController extends AbstractController
                     ->error('User password reset request failed to complete!', [
                         'exception' => $e,
                         'message' => $e->getMessage(),
-                        'trace' => $e->getTrace(),
                         'datetime' => new DateTime('now'),
                 ]);
 
