@@ -113,8 +113,6 @@ class AuthController extends AbstractController
             try {
                 $user = $this->userRepository
                     ->findByEmail($email);
-
-                dd($user);
                 $passwordResetToken->generate($user);
                 $this->sendResetPasswordMail($user);
                 $this->logger
