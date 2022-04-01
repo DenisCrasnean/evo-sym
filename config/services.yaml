@@ -8,6 +8,7 @@ services:
         bind:
             $programmeMinTimeInMinutes: '%env(PROGRAMME_MIN_TIME_IN_MINUTES)%'
             $programmeMaxTimeInMinutes: '%env(PROGRAMME_MAX_TIME_IN_MINUTES)%'
+            $tokenLifetimeInMinutes: '%env(PASSWORD_RESET_TOKEN_LIFETIME_IN_MINUTES)%'
 
     App\:
         resource: '../src/'
@@ -20,11 +21,13 @@ services:
         resource: '../src/Controller/'
         tags: [ 'controller.service_arguments' ]
 
-    App\Controller\ArgumentResolver\ProgrammeFilterArgumentResolver:
+    App\Controller\ArgumentResolver\:
+        resource: '../src/Controller/ArgumentResolver/'
         tags:
             - { name: controller.argument_value_resolver, priority: 50 }
 
     App\Encryption\EncryptionInterface $caesarEncryption: '@App\Encryption\CaesarEncryption'
+
     App\Encryption\CaesarEncryption:
         bind:
             $programmeImportApiEncryptionKey: '%env(PROGRAMME_IMPORT_API_ENCRYPTION_KEY)%'
