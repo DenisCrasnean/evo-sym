@@ -2,6 +2,7 @@ monolog:
     channels:
         - programme
         - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
+        - smsNotification
 
 when@dev:
     monolog:
@@ -12,6 +13,13 @@ when@dev:
                 formatter: 'monolog.formatter.json'
                 path: '%kernel.logs_dir%/programme.log'
                 channels: [ programme ]
+
+            smsNotification:
+                level: debug
+                type: stream
+                formatter: 'monolog.formatter.json'
+                path: '%kernel.logs_dir%/sms_notification.log'
+                channels: [ smsNotification ]
 
             main:
                 type: stream

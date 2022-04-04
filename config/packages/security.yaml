@@ -28,6 +28,7 @@ security:
     access_control:
          - { path: ^/api/programme, roles: ROLE_CUSTOMER }
          - { path: ^/api/users, roles: ROLE_CUSTOMER }
+         - { path: ^/api/messages, roles: ROLE_ADMIN }
 
 when@test:
     security:
