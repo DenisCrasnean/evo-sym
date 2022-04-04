@@ -22,6 +22,26 @@ framework:
                     User-Agent: 'Denis Internship'
                 base_uri: '%env(SMS_NOTIFICATION_BASE_URI)%'
 
+            smsNotification_client:
+                headers:
+                    X-API-KEY: '%env(SMS_NOTIFICATION_API_KEY)%'
+                    User-Agent: 'Denis Internship'
+                max_redirects: 5
+                base_uri: '%env(SMS_NOTIFICATION_BASE_URI)%'
+                timeout: 30
+                max_duration: 120
+                retry_failed:
+                    http_codes:
+                        400: ['POST']
+                        401: ['POST']
+                        403: ['POST']
+                        500: ['POST']
+                    max_retries: 5
+                    delay: 1000
+                    multiplier: 3
+                    max_delay: 5000
+                    jitter: 0.3
+
 
     session:
         handler_id: null

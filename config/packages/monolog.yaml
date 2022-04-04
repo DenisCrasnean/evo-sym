@@ -28,6 +28,13 @@ when@dev:
                 path: '%kernel.logs_dir%/sms_notification.log'
                 channels: [ smsNotification ]
 
+            smsNotification:
+                level: debug
+                type: stream
+                formatter: 'monolog.formatter.json'
+                path: '%kernel.logs_dir%/sms_notification.log'
+                channels: [ smsNotification ]
+
             main:
                 type: stream
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
