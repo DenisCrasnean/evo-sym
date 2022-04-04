@@ -29,7 +29,7 @@ class UserController
     }
 
     /**
-     * @Route(methods={"POST"})
+     * @Route(path="/store", methods={"POST"}, name="app_user_store")
      */
     public function store(Request $request, DtoInterface $userDto, UserPasswordHasherInterface $passwordHasher): Response
     {
