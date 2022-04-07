@@ -53,6 +53,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     private string $cnp;
 
     /**
+     * @ORM\Column(type="string", length=15)
+     * @Assert\Regex("/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/")
+     */
+    private string $phoneNumber;
+
+    /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
      * @Assert\Regex("/[A-Z][a-z]+/")
@@ -95,6 +101,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     {
         $this->cnp = $cnp;
 
+        return $this;
+    }
+
+    public function getPhoneNumber(): string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(string $phoneNumber): User
+    {
+        $this->phoneNumber = $phoneNumber;
         return $this;
     }
 

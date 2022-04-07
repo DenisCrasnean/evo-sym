@@ -26,6 +26,8 @@ services:
         tags:
             - { name: controller.argument_value_resolver, priority: 50 }
 
+    App\Client\Api\ApiClientInterface: ['@programme_client', '@smsNotification_client']
+
     App\Encryption\EncryptionInterface $caesarEncryption: '@App\Encryption\CaesarEncryption'
 
     App\Encryption\CaesarEncryption:
