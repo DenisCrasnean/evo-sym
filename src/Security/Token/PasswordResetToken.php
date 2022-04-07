@@ -48,18 +48,20 @@ class PasswordResetToken
      */
     public function isExpired(string $token): bool
     {
-        $passwordReset = $this->passwordResetRepository
-            ->findByToken($token);
+        if ('' !== $token) {
+            $passwordReset = $this->passwordResetRepository
+                ->findByToken($token);
 
-        $dateInterval = date_diff(
-            $passwordReset
-                ->getCreatedAt()
-                ->add(new DateInterval('PT'.$this->tokenLifetimeInMinutes.'M')),
-             new DateTimeImmutable('now')
-        );
+            $dateInterval = date_diff(
+                $passwordReset
+                    ->getCreatedAt()
+                    ->add(new DateInterval('PT'.$this->tokenLifetimeInMinutes.'M')),
+                new DateTimeImmutable('now')
+            );
 
-        if (0 !== $dateInterval->i) {
-            return false;
+            if (0 !== $dateInterval->i) {
+                return false;
+            }
         }
 
         return true;
