@@ -160,7 +160,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
 
     public function getPasswordResetToken(): string
     {
-        return $this->getPasswordResets()->last()->getToken();
+        if (false !== $this->getPasswordResets()->last()) {
+            return $this->getPasswordResets()->last()->getToken();
+        }
+
+        return '';
     }
 
     public function getRoles(): array
