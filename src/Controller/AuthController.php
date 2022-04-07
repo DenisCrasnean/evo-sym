@@ -60,7 +60,6 @@ class AuthController extends AbstractController
         try {
             $user = $this->userRepository
                 ->findByPasswordResetToken($token);
-
         } catch (NoResultException|NonUniqueResultException $e) {
             $this->logger
                 ->error("User hasn't been found into the database by the repository method findByResetPasswordToken()!", [
