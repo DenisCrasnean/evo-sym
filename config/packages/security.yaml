@@ -1,5 +1,7 @@
 security:
     enable_authenticator_manager: true
+    hide_user_not_found: true
+    session_fixation_strategy: migrate
 
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'bcrypt'
@@ -14,11 +16,12 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+            stateless: true
 
         main:
             lazy: true
             provider: app_user_provider
-            stateless: true
+
             http_basic:
                 realm: Secured Area
 

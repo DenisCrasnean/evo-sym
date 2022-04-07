@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Security\Token\PasswordResetToken;
 use App\Validator as MyAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -39,6 +40,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     private string $password;
 
     /**
+     * One User has many Reset Password Tokens.
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\PasswordReset", mappedBy="user")
+     */
+    private ?Collection $passwordResets;
+
+    /**
      * @ORM\Column(type="string", length=13, options={"fixed" = true})
      * @MyAssert\Cnp
      */
@@ -70,6 +78,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     public function __construct()
     {
         $this->programmes = new ArrayCollection();
+        $this->passwordResets = new ArrayCollection();
     }
 
     public function getId(): int
@@ -135,6 +144,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
         $this->password = $password;
 
         return $this;
+    }
+
+    public function getPasswordResets(): ?Collection
+    {
+        return $this->passwordResets;
+    }
+
+    public function setPasswordResets(Collection $passwordResets): User
+    {
+        $this->passwordResets = $passwordResets;
+
+        return $this;
+    }
+
+    public function getPasswordResetToken(): string
+    {
+        return $this->getPasswordResets()->last()->getToken();
     }
 
     public function getRoles(): array
