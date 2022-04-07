@@ -2,7 +2,6 @@
 
 namespace App\MessageHandler;
 
-use App\Client\Api\ApiClientInterface;
 use App\Client\Api\SmsApiClient;
 use App\Message\SmsNotification;
 use App\Repository\UserRepository;
