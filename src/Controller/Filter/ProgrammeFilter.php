@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator as CustomAssert;
 
-class ProgrammeFilter implements FilterInterface
+class ProgrammeFilter
 {
     /**
      * @Assert\Collection
