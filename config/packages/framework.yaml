@@ -14,40 +14,13 @@ framework:
             programme_client:
                 headers:
                     'User-Agent': 'Denis Internship'
-                max_redirects: 5
                 base_uri: https://evozon-internship-data-wh.herokuapp.com/api/
-                timeout: 2
-                max_duration: 60
-                retry_failed:
-                    http_codes:
-                        0: [ 'GET', 'HEAD' ]
-                        429: true
-                        500: [ 'GET', 'HEAD' ]
-                    max_retries: 5
-                    delay: 1000
-                    multiplier: 3
-                    max_delay: 5000
-                    jitter: 0.3
 
             smsNotification_client:
                 headers:
                     X-API-KEY: '%env(SMS_NOTIFICATION_API_KEY)%'
                     User-Agent: 'Denis Internship'
-                max_redirects: 5
                 base_uri: '%env(SMS_NOTIFICATION_BASE_URI)%'
-                timeout: 30
-                max_duration: 120
-                retry_failed:
-                    http_codes:
-                        400: ['POST']
-                        401: ['POST']
-                        403: ['POST']
-                        500: ['POST']
-                    max_retries: 5
-                    delay: 1000
-                    multiplier: 3
-                    max_delay: 5000
-                    jitter: 0.3
 
 
     session:
