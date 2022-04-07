@@ -65,7 +65,6 @@ class AuthController extends AbstractController
                 ->error("User hasn't been found into the database by the repository method findByResetPasswordToken()!", [
                     'exception' => $e,
                     'message' => $e->getMessage(),
-                    'trace' => $e->getTrace(),
                     'token' => $token,
                     'datetime' => new DateTime('now'),
                 ]);
