@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    {% endblock %}
+
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+        <script src="//unpkg.com/alpinejs" defer></script>
+    {% endblock %}
+</head>
+<body>
+<div class="flex flex-row flex-nowrap bg-gray-200">
+    <nav class="w-2/12 flex flex-col py-6 px-10 h-screen bg-gray-900 text-gray-100">
+        <ul>
+            <li>
+                Menu item
+            </li>
+        </ul>
+    </nav>
+
+    <main class="w-10/12 flex flex-col">
+        <header class="flex flex-row w-full justify-between px-6 shadow-xl bg-white">
+            <h1 class="py-4 font-family-display font-black text-xl text-gray-600 select-none">
+                {{ block('pageTitle') }}
+            </h1>
+
+            <ul x-data="{ open: false }" class="relative select-none cursor-pointer">
+                <li @click="open = !open" class="inline-flex flex-row h-full py-4 items-center px-6">
+                    <span class="text-base">
+                        {{ block('userFullName') }}
+                    </span>
+
+                    <span class="material-icons text-xl text-gray-600 ml-2 transition-all duration-300" x-bind:class="! open ? 'transition-all duration-300 transform rotate-180' : ''">
+                        keyboard_arrow_down
+                    </span>
+
+                <ul x-show="open"  class="w-full absolute top-12 left-0 bg-gray-50 rounded-lg shadow-lg overflow-hidden" x-bind:class="! open ? 'hidden' : 'block'">
+                    <li>
+                        <a class="inline-flex flex-row items-center w-full hover:bg-gray-100 border-t border-gray-100 px-6 py-2" href="{{ path('app_backoffice_logout') }}">
+                            <span class="material-icons text-xl text-gray-600 mr-2">
+                                logout
+                            </span>
+                            <span class="text-base">
+                                Logout
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+                </li>
+            </ul>
+        </header>
+    </main>
+</div>
+{% block body %}
+{% endblock %}
+</body>
+</html>

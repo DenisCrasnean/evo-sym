@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\LoginType;
 use App\Form\PasswordResetRequestType;
 use App\Form\PasswordResetType;
 use App\Repository\UserRepository;
@@ -11,13 +12,13 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Exception;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
@@ -25,6 +26,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class AuthController extends AbstractController
 {
@@ -50,6 +52,39 @@ class AuthController extends AbstractController
         $this->mailer = $mailer;
         $this->logger = $userLogger;
         $this->router = $router;
+    }
+
+    /**
+     * @Route(path="/admin/login/", name="app_backoffice_login")
+     **/
+    public function adminLoginAction(Request $request, AuthenticationUtils $authenticationUtils): Response
+    {
+        $form = $this->createForm(LoginType::class);
+        $form->handleRequest($request);
+        $error = $authenticationUtils->getLastAuthenticationError();
+        $lastUsername = $authenticationUtils->getLastUsername();
+
+        if (true === $this->isGranted('IS_AUTHENTICATED_REMEMBERED') &&
+            true === $this->isGranted('ROLE_ADMIN')
+        ) {
+            return $this->redirectToRoute('app_backoffice_dashboard');
+        }
+
+        return $this->renderForm('admin/auth/login.html.twig', [
+                'form' => $form,
+                'last_username' => $lastUsername,
+                'error' => $error,
+            ]);
+    }
+
+    /**
+     * @Route("admin/logout", name="app_backoffice_logout")
+     *
+     * @throws Exception
+     */
+    public function logout(): void
+    {
+        throw new Exception('Don\'t forget to activate logout in security.yaml');
     }
 
     /**

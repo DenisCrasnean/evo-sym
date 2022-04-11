@@ -6,6 +6,10 @@ security:
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'bcrypt'
 
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_CUSTOMER
+        ROLE_TRAINER: ROLE_CUSTOMER
+
     providers:
         app_user_provider:
             entity:
@@ -18,7 +22,34 @@ security:
             security: false
             stateless: true
 
-        main:
+        backoffice:
+            methods: [GET, POST]
+            pattern: ^/admin
+            provider: app_user_provider
+            stateless: false
+            login_throttling:
+                max_attempts: 3
+                interval: '15 minutes'
+
+            form_login:
+                form_only: true
+                login_path: app_backoffice_login
+                check_path: app_backoffice_login
+                default_target_path: app_backoffice_dashboard
+
+            logout:
+                path: app_backoffice_logout
+                target: app_backoffice_login
+
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                always_remember_me: false
+                token_provider:
+                    doctrine: true
+
+        api:
+            pattern: ^/api
             lazy: true
             provider: app_user_provider
 
@@ -29,9 +60,10 @@ security:
                 check_path: api_login
 
     access_control:
-         - { path: ^/api/programme, roles: ROLE_CUSTOMER }
-         - { path: ^/api/users, roles: ROLE_CUSTOMER }
-         - { path: ^/api/messages, roles: ROLE_ADMIN }
+        - { path: ^/admin/dashboard, roles: ROLE_ADMIN }
+        - { path: ^/api/programme, roles: ROLE_CUSTOMER }
+        - { path: ^/api/users, roles: ROLE_CUSTOMER }
+        - { path: ^/api/messages, roles: ROLE_ADMIN }
 
 when@test:
     security:
