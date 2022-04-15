@@ -55,46 +55,58 @@ class AuthController extends AbstractController
     }
 
     /**
-     * @Route(path="/admin/login/", name="app_backoffice_login")
+     * @Route(path="/admin/login", name="backoffice_login", methods={"GET", "POST"})
      **/
     public function adminLoginAction(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
         $form = $this->createForm(LoginType::class);
         $form->handleRequest($request);
-        $error = $authenticationUtils->getLastAuthenticationError();
-        $lastUsername = $authenticationUtils->getLastUsername();
 
-        if (true === $this->isGranted('IS_AUTHENTICATED_REMEMBERED') &&
-            true === $this->isGranted('ROLE_ADMIN')
-        ) {
-            return $this->redirectToRoute('app_backoffice_dashboard');
+        $error = $authenticationUtils->getLastAuthenticationError();
+
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return $this->redirectToRoute('backoffice_dashboard');
         }
 
         return $this->renderForm('admin/auth/login.html.twig', [
                 'form' => $form,
-                'last_username' => $lastUsername,
                 'error' => $error,
             ]);
     }
 
     /**
-     * @Route("admin/logout", name="app_backoffice_logout")
-     *
-     * @throws Exception
-     */
+     * @Route(path="/admin/logout", name="backoffice_logout", methods={"GET"})
+     **/
     public function logout(): void
     {
-        throw new Exception('Don\'t forget to activate logout in security.yaml');
     }
 
     /**
-     * @Route(path="/account/reset-password/{token}", name="account_password_reset")
+     * @Route(path="account/reset-password/{token}", name="account_password_reset", methods={"GET", "POST"})
      **/
     public function resetPasswordAction(string $token, Request $request, UserPasswordHasherInterface $passwordHasher): Response
     {
+        $form = $this->createForm(PasswordResetType::class);
+        $form->handleRequest($request);
+
         try {
             $user = $this->userRepository
                 ->findByPasswordResetToken($token);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $plainPassword = $form->get('password')->getData();
+                $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+                $user->setPassword($hashedPassword);
+                $this->entityManager->persist($user);
+                $this->entityManager->flush();
+                $this->logger
+                    ->info('User password reset completed successfully!', [
+                        'datetime' => new DateTime('now'),
+                        'userIdentifier' => $user->getUserIdentifier(),
+                    ]);
+
+                return $this->redirectToRoute('backoffice_dashboard');
+            }
         } catch (NoResultException|NonUniqueResultException $e) {
             $this->logger
                 ->error("User hasn't been found into the database by the repository method findByResetPasswordToken()!", [
@@ -104,27 +116,10 @@ class AuthController extends AbstractController
                     'datetime' => new DateTime('now'),
                 ]);
 
-            return $this->render('account/password-reset-form.html.twig', [
+            return $this->renderForm('account/password-reset-form.html.twig', [
+                'form' => $form,
                 'errors' => $e->getMessage(),
             ]);
-        }
-
-        $form = $this->createForm(PasswordResetType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $plainPassword = $form->get('password')->getData();
-            $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
-            $user->setPassword($hashedPassword);
-            $this->entityManager->persist($user);
-            $this->entityManager->flush();
-            $this->logger
-                ->info('User password reset completed successfully!', [
-                    'datetime' => new DateTime('now'),
-                    'userIdentifier' => $user->getUserIdentifier(),
-            ]);
-
-            return $this->redirectToRoute('dashboard');
         }
 
         return $this->renderForm('account/password-reset-form.html.twig', [
@@ -194,13 +189,5 @@ class AuthController extends AbstractController
             ]);
 
         $this->mailer->send($email);
-    }
-
-    /**
-     * @Route(path="/account/dashboard", name="dashboard")
-     **/
-    public function dashboardAction(): Response
-    {
-        return $this->render('customers/dashboard.html.twig');
     }
 }

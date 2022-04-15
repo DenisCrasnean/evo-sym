@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class BackOfficeController extends AbstractController
 {
     /**
-     * @Route("/admin/dashboard", name="app_backoffice_dashboard")
+     * @Route("/admin/dashboard", name="backoffice_dashboard", methods={"GET"})
      */
     public function index(): Response
     {
