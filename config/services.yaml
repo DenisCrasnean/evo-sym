@@ -9,7 +9,6 @@ services:
             $programmeMinTimeInMinutes: '%env(PROGRAMME_MIN_TIME_IN_MINUTES)%'
             $programmeMaxTimeInMinutes: '%env(PROGRAMME_MAX_TIME_IN_MINUTES)%'
             $tokenLifetimeInMinutes: '%env(PASSWORD_RESET_TOKEN_LIFETIME_IN_MINUTES)%'
-            $apiVersion: '%env(GYM_API_VERSION)%'
 
     App\:
         resource: '../src/'
