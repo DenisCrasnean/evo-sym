@@ -6,8 +6,6 @@ namespace App\Repository;
 
 use App\Entity\Programme;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\Query\QueryBuilder;
-use Doctrine\ORM\QueryBuilder as QueryBuilderAlias;
 use Doctrine\Persistence\ManagerRegistry;
 
 class ProgrammeRepository extends ServiceEntityRepository
@@ -44,11 +42,11 @@ class ProgrammeRepository extends ServiceEntityRepository
     private function applyFilters($queryBuilder, $params)
     {
         if (isset($params['filterBy']) && isset($params['filterValue'])) {
-            return $queryBuilder->where('p.' . $params['filterBy'] . "=" . "'" .$params['filterValue']."'");
+            return $queryBuilder->where('p.'.$params['filterBy'].'='."'".$params['filterValue']."'");
         }
 
         if (isset($params['orderBy']) && isset($params['sortOrder'])) {
-            return $queryBuilder->orderBy('p.' . $params['orderBy'], $params['sortOrder']);
+            return $queryBuilder->orderBy('p.'.$params['orderBy'], $params['sortOrder']);
         }
     }
 
@@ -61,5 +59,31 @@ class ProgrammeRepository extends ServiceEntityRepository
         $query = $qb->getQuery();
 
         return $query->execute();
+    }
+
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function findByMostPopularHours()
+    {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+
+        $sql = "SELECT 
+                DAY(programme.start_time) as day, 
+                HOUR(programme.start_time) as hour,
+                count(*) as participants
+                FROM programme
+                LEFT JOIN programmes_customers pc on programme.id = pc.programme_id
+                GROUP BY day, hour
+                ORDER BY count(*) DESC";
+
+        $stmt = $conn->prepare($sql);
+
+//        dd($stmt->executeQuery()
+//            ->fetchAllAssociative());
+
+        return $stmt->executeQuery()
+            ->fetchAllAssociative();
     }
 }

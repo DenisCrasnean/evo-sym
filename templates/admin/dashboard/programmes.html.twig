@@ -1,0 +1,13 @@
+{% for report in reports %}
+    <section class="flex flex-col">
+        <span>
+            Day: {{ report.day }}
+        </span>
+        <span>
+            Hour: {{ report.hour }}
+        </span>
+        <span>
+            Participants: {{ report.participants }}
+        </span>
+    </section>
+{% endfor %}
