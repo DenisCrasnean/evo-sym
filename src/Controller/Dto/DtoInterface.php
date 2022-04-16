@@ -8,7 +8,7 @@ use App\Entity\EntityInterface;
 
 interface DtoInterface
 {
-    public function fromObject(EntityInterface $object): EntityInterface;
+    public function fromObject(object $object): EntityInterface;
 
     public function fromArray(array $data): EntityInterface;
 

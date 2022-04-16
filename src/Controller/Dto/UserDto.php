@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Dto;
 
-use App\Entity\EntityInterface;
 use App\Entity\User;
-use DateTime;
 
 class UserDto implements DtoInterface
 {
@@ -24,14 +22,15 @@ class UserDto implements DtoInterface
 
     public array $roles = [];
 
-    public function fromObject(EntityInterface $object): User
+    public function fromObject(object $object): User
     {
         $dto = new User();
         $dto->setFirstName($object->getFirstName())
             ->setLastName($object->getLastName())
             ->setEmail($object->getEmail())
-            ->setPassword($object->getPassword())
             ->setCnp($object->getCnp())
+            ->setPlainPassword($object->getPassword())
+            ->setPhoneNumber($object->getPhoneNumber())
             ->setRoles($object->getRoles() ?? ['ROLE_CUSTOMER']);
 
         return $dto;
@@ -40,11 +39,12 @@ class UserDto implements DtoInterface
     public function fromArray(array $data): User
     {
         $dto = new User();
-        $dto->setFirstName($data['firstName'])
-            ->setLastName($data['lastName'])
-            ->setEmail($data['email'])
+        $dto->setFirstName($data['firstName'] ?? $data['first_name'])
+            ->setLastName($data['lastName'] ?? $data['last_name'])
+            ->setEmail($data['email'] ?? $data['e-mail'])
             ->setCnp($data['cnp'])
-            ->setPassword($data['password'])
+            ->setPlainPassword($data['password'])
+            ->setPhoneNumber($data['phoneNumber'] ?? $data['phone_number'])
             ->setRoles($data['roles'] ?? ['ROLE_CUSTOMER']);
 
         return $dto;
@@ -72,7 +72,6 @@ class UserDto implements DtoInterface
         return $userObjectCollection;
     }
 
-
     public function getId(): int
     {
         return $this->id;
@@ -86,6 +85,7 @@ class UserDto implements DtoInterface
     public function setFirstName(string $firstName): UserDto
     {
         $this->firstName = $firstName;
+
         return $this;
     }
 
@@ -97,6 +97,7 @@ class UserDto implements DtoInterface
     public function setLastName(string $lastName): UserDto
     {
         $this->lastName = $lastName;
+
         return $this;
     }
 
@@ -108,12 +109,14 @@ class UserDto implements DtoInterface
     public function setEmail(string $email): UserDto
     {
         $this->email = $email;
+
         return $this;
     }
 
     public function setPassword(string $password): UserDto
     {
         $this->password = $password;
+
         return $this;
     }
 
@@ -125,6 +128,7 @@ class UserDto implements DtoInterface
     public function setCnp(string $cnp): UserDto
     {
         $this->cnp = $cnp;
+
         return $this;
     }
 
@@ -136,6 +140,7 @@ class UserDto implements DtoInterface
     public function setRoles(array $roles): UserDto
     {
         $this->roles = $roles;
+
         return $this;
     }
 }
