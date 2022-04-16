@@ -3,7 +3,11 @@
 namespace App\Client\Api;
 
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpClient\Exception\TimeoutException;
 use Symfony\Component\HttpFoundation\Exception\RequestExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
@@ -34,17 +38,8 @@ abstract class AbstractApiClient implements ApiClientInterface
                 'Request for '.$url.' endpoint completed successfully!',
                 $this->defaultLoggerContext($response),
             );
-        } catch (RequestExceptionInterface $e) {
-            $this->logger->error(
-                'Request for '.$url.' endpoint failed!',
-                [
-                    $this->defaultLoggerContext($response),
-                    'endpoint' => $url,
-                    'exception' => $e,
-                    'exception_message' => $e->getMessage(),
-                ]
-            );
-        } catch (TransportExceptionInterface $e) {
+        } catch (ServerExceptionInterface|TooManyRequestsHttpException|UnauthorizedHttpException|TimeoutException|
+            RequestExceptionInterface|TransportExceptionInterface $e) {
             $this->logger->error(
                 'Request for '.$url.' endpoint failed!',
                 [

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Security\Token\PasswordResetToken;
 use App\Validator as MyAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -39,10 +40,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     private string $password;
 
     /**
+     * One User has many Reset Password Tokens.
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\PasswordReset", mappedBy="user")
+     */
+    private ?Collection $passwordResets;
+
+    /**
      * @ORM\Column(type="string", length=13, options={"fixed" = true})
      * @MyAssert\Cnp
      */
     private string $cnp;
+
+    /**
+     * @ORM\Column(type="string", length=15)
+     * @Assert\Regex("/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/")
+     */
+    private string $phoneNumber;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -70,6 +84,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     public function __construct()
     {
         $this->programmes = new ArrayCollection();
+        $this->passwordResets = new ArrayCollection();
     }
 
     public function getId(): int
@@ -77,21 +92,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getCnp(): string
     {
         return $this->cnp;
     }
 
-    /**
-     * @param string $cnp
-     * @return User
-     */
     public function setCnp(string $cnp): User
     {
         $this->cnp = $cnp;
+
+        return $this;
+    }
+
+    public function getPhoneNumber(): string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(string $phoneNumber): User
+    {
+        $this->phoneNumber = $phoneNumber;
         return $this;
     }
 
@@ -103,6 +123,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     public function setFirstName(?string $firstName): User
     {
         $this->firstName = $firstName;
+
         return $this;
     }
 
@@ -114,6 +135,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     public function setLastName(?string $lastName): User
     {
         $this->lastName = $lastName;
+
         return $this;
     }
 
@@ -139,6 +161,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
         $this->password = $password;
 
         return $this;
+    }
+
+    public function getPasswordResets(): ?Collection
+    {
+        return $this->passwordResets;
+    }
+
+    public function setPasswordResets(Collection $passwordResets): User
+    {
+        $this->passwordResets = $passwordResets;
+
+        return $this;
+    }
+
+    public function getPasswordResetToken(): string
+    {
+        if (false !== $this->getPasswordResets()->last()) {
+            return $this->getPasswordResets()->last()->getToken();
+        }
+
+        return '';
     }
 
     public function getRoles(): array
@@ -171,9 +214,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
         return $this;
     }
 
-    public function getSalt()
+    public function getSalt(): ?string
     {
-        // TODO: Implement getSalt() method.
+        return null;
     }
 
     public function eraseCredentials()

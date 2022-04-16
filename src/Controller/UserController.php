@@ -3,13 +3,12 @@
 namespace App\Controller;
 
 use App\Controller\Dto\DtoInterface;
-use App\Controller\Dto\UserDto;
-use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -30,13 +29,18 @@ class UserController
     }
 
     /**
-     * @Route(methods={"POST"})
-     *
-     * @throws \Doctrine\ORM\ORMException
+     * @Route(path="/store", methods={"POST"}, name="app_user_store")
      */
-    public function store(Request $request, DtoInterface $userDto): Response
+    public function store(Request $request, DtoInterface $userDto, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = $userDto->fromArray($request->toArray());
+
+        $hashedPassword = $passwordHasher->hashPassword(
+            $user,
+            $user->getPassword(),
+        );
+
+        $user->setPassword($hashedPassword);
 
         $errors = $this->validator->validate($user);
 
@@ -56,7 +60,7 @@ class UserController
         $this->entityManager->flush();
         $this->entityManager->refresh($user);
         $savedUserDto = $userDto->fromObject($user);
-        $this->logger->info('User created successfully!', ['email' => $savedUserDto->email]);
+        $this->logger->info('User created successfully!', ['email' => $savedUserDto->getEmail()]);
 
         return new JsonResponse($savedUserDto, Response::HTTP_CREATED);
     }
