@@ -7,6 +7,8 @@ use Symfony\Component\HttpClient\Exception\TimeoutException;
 use Symfony\Component\HttpFoundation\Exception\RequestExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -18,6 +20,8 @@ abstract class AbstractApiClient implements ApiClientInterface
 
     private LoggerInterface $logger;
 
+    private ResponseInterface $response;
+
     public function __construct(HttpClientInterface $client, LoggerInterface $logger)
     {
         $this->client = $client;
@@ -26,9 +30,8 @@ abstract class AbstractApiClient implements ApiClientInterface
 
     public function fetch(string $method, string $url, array $options = []): ResponseInterface
     {
-        $response = null;
         try {
-            $response = $this->client->request(
+            $this->response = $this->client->request(
                 $method,
                 $url,
                 $options
@@ -36,14 +39,16 @@ abstract class AbstractApiClient implements ApiClientInterface
 
             $this->logger->info(
                 'Request for '.$url.' endpoint completed successfully!',
-                $this->defaultLoggerContext($response),
+                $this->defaultLoggerContext($this->response),
             );
+
+            return $this->response;
         } catch (ServerExceptionInterface|TooManyRequestsHttpException|UnauthorizedHttpException|TimeoutException|
             RequestExceptionInterface|TransportExceptionInterface $e) {
             $this->logger->error(
                 'Request for '.$url.' endpoint failed!',
                 [
-                    $this->defaultLoggerContext($response),
+                    $this->defaultLoggerContext($this->response),
                     'endpoint' => $url,
                     'exception' => $e,
                     'exception_message' => $e->getMessage(),
@@ -51,18 +56,25 @@ abstract class AbstractApiClient implements ApiClientInterface
             );
         }
 
-        return $response;
+        return $this->response;
     }
 
     public function defaultLoggerContext(ResponseInterface $response): array
     {
-        return [
-            'status_code' => $response->getStatusCode(),
-            'date' => $response->getHeaders()['date'][0],
-            'start_time' => $response->getInfo('start_time'),
-            'total_time' => $response->getInfo('total_time'),
-            'redirect_count' => $response->getInfo('redirect_count'),
-            'redirect_url' => $response->getInfo('redirect_url'),
-        ];
+        try {
+            return [
+                'status_code' => $response->getStatusCode(),
+                'date' => $response->getHeaders()['date'][0],
+                'start_time' => $response->getInfo('start_time'),
+                'total_time' => $response->getInfo('total_time'),
+                'redirect_count' => $response->getInfo('redirect_count'),
+                'redirect_url' => $response->getInfo('redirect_url'),
+            ];
+        } catch (ClientExceptionInterface|RedirectionExceptionInterface|ServerExceptionInterface|TransportExceptionInterface $e) {
+            return [
+                'exception' => $e,
+                'message' => $e->getMessage(),
+            ];
+        }
     }
 }
