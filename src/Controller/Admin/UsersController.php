@@ -21,20 +21,16 @@ class UsersController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
 
-    private UserDto $userDto;
-
     private UserRepository $userRepository;
 
     private LoggerInterface $userLogger;
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        UserDto $userDto,
         UserRepository $userRepository,
         LoggerInterface $userLogger
     ) {
         $this->entityManager = $entityManager;
-        $this->userDto = $userDto;
         $this->userRepository = $userRepository;
         $this->userLogger = $userLogger;
     }
