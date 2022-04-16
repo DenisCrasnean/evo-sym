@@ -2,20 +2,16 @@
 
 namespace App\Controller\Admin;
 
-use App\Controller\Dto\UserDto;
 use App\Form\UserType;
-use App\Repository\ProgrammeRepository;
 use App\Repository\UserRepository;
-use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\ORMInvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 class UsersController extends AbstractController
 {
@@ -143,31 +139,36 @@ class UsersController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        try {
-            $user = $this->userRepository->findOneBy(['email' => $id]);
+        $user = $this->userRepository->findOneBy(['email' => $id]);
+
+        if (null !== $user) {
             $this->entityManager->remove($user);
             $this->entityManager->flush();
 
             $this->addFlash(
                 'success',
-                'User deleted successfully!'
+                'User deleted successfully!',
             );
-        } catch (ORMInvalidArgumentException $e) {
-            $this->addFlash(
-                'error',
-                "User doesn't exist or was already deleted!"
-            );
+
+            return $this->redirectToRoute('app_backoffice_users');
         }
+
+        $this->addFlash(
+            'error',
+            "User doesn't exist or was already deleted!"
+        );
 
         return $this->redirectToRoute('app_backoffice_users');
     }
 
     /**
-     * @Route("/admin/users/recover/{id}", name="app_backoffice_users_recover", methods={"DELETE"})
+     * @Route("/admin/users/recover/{id}", name="app_backoffice_users_recover", methods={"GET"})
      */
     public function recoverSoftDeletedUserAction($id): Response
     {
-        try {
+        $user = $this->userRepository->findOneBy(['email' => $id]);
+
+        if (null !== $user) {
             $this->entityManager->getFilters()->disable('softdeleteable');
             $user = $this->userRepository->findOneBy(['email' => $id]);
             $this->entityManager->remove($user);
@@ -175,14 +176,16 @@ class UsersController extends AbstractController
 
             $this->addFlash(
                 'success',
-                'User recovered successfully!'
+                'User with '.$user->email.' e-mail was recovered successfully!'
             );
-        } catch (\Exception $e) {
-            $this->addFlash(
+
+            return $this->render('admin/dashboard/users.html.twig');
+        }
+
+        $this->addFlash(
                 'error',
                 "User doesn't exist or was deleted from the database!"
             );
-        }
 
         return $this->render('admin/dashboard/users.html.twig');
     }
