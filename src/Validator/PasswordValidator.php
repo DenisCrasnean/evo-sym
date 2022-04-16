@@ -14,9 +14,9 @@ class PasswordValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, Password::class);
         }
 
-        if (strlen($value) >= 8) {
-            preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/", $value, $matches);
+        $validateFormat = preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A -Z])(?=.*[a-zA-Z]).{8,}$/", $value);
 
+        if (false !== $validateFormat) {
             return;
         }
 
