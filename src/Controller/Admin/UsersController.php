@@ -186,19 +186,4 @@ class UsersController extends AbstractController
 
         return $this->render('admin/dashboard/users.html.twig');
     }
-
-    /**
-     * @Route("/admin/reports", name="app_backoffice_reports", methods={"GET"})
-     *
-     * @throws Exception
-     */
-    public function reportAction(ProgrammeRepository $programmeRepository): Response
-    {
-        $report = $programmeRepository->findByMostPopularHours();
-
-        return $this->render('admin/dashboard/programmes.html.twig', [
-            'user' => $this->getUser(),
-            'reports' => $report,
-        ]);
-    }
 }
