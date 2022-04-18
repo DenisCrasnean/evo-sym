@@ -6,8 +6,6 @@ namespace App\Repository;
 
 use App\Entity\Programme;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\Query\QueryBuilder;
-use Doctrine\ORM\QueryBuilder as QueryBuilderAlias;
 use Doctrine\Persistence\ManagerRegistry;
 
 class ProgrammeRepository extends ServiceEntityRepository
@@ -17,7 +15,7 @@ class ProgrammeRepository extends ServiceEntityRepository
         parent::__construct($registry, Programme::class);
     }
 
-    public function findAll(array $params = [])
+    public function findAll(array $params = null)
     {
         $queryBuilder = $this->createQueryBuilder('p');
 
@@ -44,11 +42,11 @@ class ProgrammeRepository extends ServiceEntityRepository
     private function applyFilters($queryBuilder, $params)
     {
         if (isset($params['filterBy']) && isset($params['filterValue'])) {
-            return $queryBuilder->where('p.' . $params['filterBy'] . "=" . "'" .$params['filterValue']."'");
+            return $queryBuilder->where('p.'.$params['filterBy'].'='."'".$params['filterValue']."'");
         }
 
         if (isset($params['orderBy']) && isset($params['sortOrder'])) {
-            return $queryBuilder->orderBy('p.' . $params['orderBy'], $params['sortOrder']);
+            return $queryBuilder->orderBy('p.'.$params['orderBy'], $params['sortOrder']);
         }
     }
 

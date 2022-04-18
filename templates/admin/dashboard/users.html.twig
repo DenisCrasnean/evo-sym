@@ -1,0 +1,95 @@
+{% extends "admin/dashboard/layout.html.twig" %}
+
+{% block pageTitle %}
+    Users
+{% endblock %}
+
+{% block list_actions %}
+    <section class="flex flex-row sticky top-0 w-full left-0 items-center justify-between p-6 bg-gray-200 z-20">
+        <article class="relative flex flex-row items-center group w-full rounded-lg shadow-lg">
+            <span class="material-icons absolute inline-flex items-center p-2 text-gray-500 group-focus-within:text-blue-600 top-0 left-0 inset-0 pointer-events-none">
+                search
+            </span>
+            <input type="search" class="pl-10 w-full border-0 rounded-md">
+        </article>
+
+        <a href="{{ path('app_backoffice_users_store') }}" class="inline-flex flex-row items-center ml-6 py-2 px-6 rounded-md shadow-lg bg-blue-600 hover:bg-blue-700 transition-all text-gray-100">
+            <span class="material-icons -ml-1 mr-1">
+                add
+            </span>
+
+            <span>
+                User
+            </span>
+        </a>
+    </section>
+{% endblock %}
+
+{% block body %}
+    <table class="table relative inset-0 w-full border border-gray-200 bg-white -mt-6 rounded-lg shadow-lg">
+        <thead>
+            <tr class="overflow-hidden rounded-t-lg">
+                <th class="sticky top-[5.499rem] inset-0 py-3 px-6 text-sm text-gray-600 text-left tracking-wide border border-gray-200 bg-gray-100 select-none">
+                    First Name
+                </th>
+                <th class="sticky top-[5.499rem] inset-0 py-3 px-6 text-sm text-gray-600 text-left tracking-wide border border-gray-200 bg-gray-100 select-none">
+                    Last name
+                </th>
+                <th class="sticky top-[5.499rem] inset-0 py-3 px-6 text-sm text-gray-600 text-left tracking-wide border border-gray-200 bg-gray-100 select-none">
+                    E-mail
+                </th>
+                <th class="sticky top-[5.499rem] inset-0 py-3 px-6 text-sm text-gray-600 text-left tracking-wide border border-gray-200 bg-gray-100 select-none">
+                    Phone Number
+                </th>
+                <th class="sticky top-[5.499rem] inset-0 py-3 px-6 text-sm text-gray-600 text-left tracking-wide border border-gray-200 bg-gray-100 select-none">
+                   Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody class="">
+        {% for user in users %}
+            <tr>
+                <td class="py-3 px-6 border border-gray-200">
+                    {{ user.getFirstName() }}
+                </td>
+                <td class="py-3 px-6 border border-gray-200">
+                    {{ user.getLastName() }}
+                </td>
+                <td class="py-3 px-6 border border-gray-200">
+                    {{ user.getEmail() }}
+                </td>
+                <td class="border border-gray-200">
+                    <a href="tel:{{ user.getPhoneNumber() }}" class="inline-flex w-full h-full py-3 px-6">
+                        {{ user.getPhoneNumber() }}
+                    </a>
+                </td>
+                <td class="px-6 border border-gray-200 select-none">
+                    <a href="{{ path('app_backoffice_users_update', {id: user.userIdentifier}) }}" class="inline-flex flex-row items-center pl-1 pr-2 py-3 text-gray-600 hover:text-gray-800 transition-all">
+                        <span class="material-icons mr-1 text-base">
+                            edit
+                        </span>
+
+                        <span class="text-base font-semibold">
+                            Edit
+                        </span>
+                    </a>
+
+                    <form name="user" class="inline-flex flex-row" action="{{ path('app_backoffice_users_soft_delete', { id: user.userIdentifier }) }}", method="POST">
+                        <input type="hidden" name="_method" value="DELETE">
+
+                        <button type="submit" class="inline-flex flex-row items-center pl-1 pr-2 py-3 text-red-600 hover:text-red-800 transition-all">
+                            <span class="material-icons mr-1 text-base">
+                                delete
+                            </span>
+
+                            <span class="text-base font-semibold">
+                                Delete
+                            </span>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
