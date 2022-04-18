@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Dto;
 
-use App\Entity\EntityInterface;
 use App\Entity\Programme;
 use App\Entity\Room;
 use App\Entity\User;
@@ -28,8 +27,7 @@ class ProgrammeDto implements DtoInterface
 
     private ?Room $room;
 
-
-    public function fromObject(EntityInterface $object): Programme
+    public function fromObject(object $object): Programme
     {
         $dto = new Programme();
         $dto->setName($object->getName())
@@ -100,6 +98,7 @@ class ProgrammeDto implements DtoInterface
     public function setName(string $name): ProgrammeDto
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -111,6 +110,7 @@ class ProgrammeDto implements DtoInterface
     public function setDescription(string $description): ProgrammeDto
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -122,6 +122,7 @@ class ProgrammeDto implements DtoInterface
     public function setStartTime(DateTime $startTime): ProgrammeDto
     {
         $this->startTime = $startTime;
+
         return $this;
     }
 
@@ -133,6 +134,7 @@ class ProgrammeDto implements DtoInterface
     public function setEndTime(DateTime $endTime): ProgrammeDto
     {
         $this->endTime = $endTime;
+
         return $this;
     }
 
@@ -144,6 +146,7 @@ class ProgrammeDto implements DtoInterface
     public function setIsOnline(bool $isOnline): ProgrammeDto
     {
         $this->isOnline = $isOnline;
+
         return $this;
     }
 
@@ -155,6 +158,7 @@ class ProgrammeDto implements DtoInterface
     public function setMaxParticipants(int $maxParticipants): ProgrammeDto
     {
         $this->maxParticipants = $maxParticipants;
+
         return $this;
     }
 
@@ -166,6 +170,7 @@ class ProgrammeDto implements DtoInterface
     public function setTrainer(User $trainer): ProgrammeDto
     {
         $this->trainer = $trainer;
+
         return $this;
     }
 
@@ -177,6 +182,7 @@ class ProgrammeDto implements DtoInterface
     public function setRoom(Room $room): ProgrammeDto
     {
         $this->room = $room;
+
         return $this;
     }
 }

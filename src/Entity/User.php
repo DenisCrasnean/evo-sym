@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Security\Token\PasswordResetToken;
 use App\Validator as MyAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -16,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityInterface
 {
-    public const ROLE_USER = 'ROLE_CUSTOMER';
+    public const ROLE_CUSTOMER = 'ROLE_CUSTOMER';
     public const ROLE_ADMIN = 'ROLE_ADMIN';
     public const ROLES = ['ROLE_CUSTOMER', 'ROLE_ADMIN'];
 
@@ -32,6 +31,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
      * @Assert\Email
      */
     private string $email;
+
+    /**
+     * @MyAssert\Password
+     */
+    private ?string $plainPassword;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -54,7 +58,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
 
     /**
      * @ORM\Column(type="string", length=15)
-     * @Assert\Regex("/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/")
+     * @Assert\Regex("/^\+[1-9]\d{1,14}$/")
      */
     private string $phoneNumber;
 
@@ -112,6 +116,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     public function setPhoneNumber(string $phoneNumber): User
     {
         $this->phoneNumber = $phoneNumber;
+
         return $this;
     }
 
@@ -148,6 +153,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     {
         $this->email = $email;
 
+        return $this;
+    }
+
+    public function getPlainPassword(): string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword($plainPassword): User
+    {
+        $this->plainPassword = $plainPassword;
         return $this;
     }
 
@@ -221,7 +237,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
 
     public function eraseCredentials()
     {
-        // TODO: Implement eraseCredentials() method.
+        $this->plainPassword = null;
     }
 
     public function getUsername(): string

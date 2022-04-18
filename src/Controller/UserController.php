@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Controller\Dto\DtoInterface;
+use App\Controller\Dto\UserDto;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,13 +32,13 @@ class UserController
     /**
      * @Route(path="/store", methods={"POST"}, name="app_user_store")
      */
-    public function store(Request $request, DtoInterface $userDto, UserPasswordHasherInterface $passwordHasher): Response
+    public function store(Request $request, UserDto $userDto, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = $userDto->fromArray($request->toArray());
 
         $hashedPassword = $passwordHasher->hashPassword(
             $user,
-            $user->getPassword(),
+            $user->getPlainPassword(),
         );
 
         $user->setPassword($hashedPassword);

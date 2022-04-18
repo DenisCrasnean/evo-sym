@@ -15,7 +15,7 @@ class ProgrammeRepository extends ServiceEntityRepository
         parent::__construct($registry, Programme::class);
     }
 
-    public function findAll(array $params = [])
+    public function findAll(array $params = null)
     {
         $queryBuilder = $this->createQueryBuilder('p');
 
