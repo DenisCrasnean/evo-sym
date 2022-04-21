@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * @Route(path="/api/user", methods={"POST"})
+ * @Route(path="/api/users", methods={"POST"})
  **/
 class UserController
 {
@@ -30,7 +30,7 @@ class UserController
     }
 
     /**
-     * @Route(path="/store", methods={"POST"}, name="app_user_store")
+     * @Route(methods={"POST"}, name="app_user_store")
      */
     public function store(Request $request, UserDto $userDto, UserPasswordHasherInterface $passwordHasher): Response
     {
