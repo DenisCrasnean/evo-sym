@@ -52,7 +52,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
 
     /**
      * @ORM\Column(type="string", length=13, options={"fixed" = true})
-     * @MyAssert\Cnp
+     * @MyAssert\Cnp;
      */
     private string $cnp;
 

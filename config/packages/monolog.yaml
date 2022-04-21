@@ -4,10 +4,25 @@ monolog:
         - user
         - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
         - smsNotification
+        - analytics
+
+    handlers:
+        analytics:
+            level: info
+            type: stream
+            formatter: 'monolog.formatter.json'
+            path: '%kernel.logs_dir%/analytics.log'
+            channels: [ 'user' ]
 
 when@dev:
     monolog:
         handlers:
+            analytics:
+                level: debug
+                type: stream
+                formatter: 'monolog.formatter.json'
+                path: '%kernel.logs_dir%/analytics.log'
+                channels: [ 'analytics' ]
             programme:
                 level: debug
                 type: stream

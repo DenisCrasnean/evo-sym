@@ -17,7 +17,6 @@ class CnpValidator extends ConstraintValidator
         $cnp = preg_replace("/\s+/", '', $value);
 
         if (13 === strlen($cnp)) {
-            preg_match('/^([1-8])([1-9][0-9])([0-9][0-9])([0-9][0-9])([0-5][0-9])([0-9]{3})([1-9])$/', $cnp, $matches);
             $cnpForControl = str_split(substr($cnp, 0, 12));
             $controlConstant = str_split('279146358279');
             $cnpControlDigit = 0;
